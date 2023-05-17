@@ -25,10 +25,10 @@ unsigned char decode_char(char c, int* rands, int position){
     return c;
 }
 
-void decode_string(unsigned char *content, int size, int *rands){
+void decode_string(unsigned char *content, int size, int *rands, int start_pos){
     int rand1, rand2;
     int j = 0;
-    for (int i = 4; i < size; i++){
+    for (int i = start_pos; i < size; i++){
         content[i] = decode_char(content[i], rands, j);
         printf("%c", content[i]);
         j += 2;
@@ -83,8 +83,9 @@ int main(){
 
     // I think this is the correct seed but it doesn't work for me... 
     int seed = 1658229288;
-    int found_seed;
-    FILE *inputFile = fopen("file.txt", "rb");
+    int found_seed = 0;
+    int start_pos;
+    FILE *inputFile = fopen("flag.enc", "rb");
     int size = get_file_size(inputFile);
     unsigned char *content = (unsigned char *)malloc(size);
     fread(content, 1, (size_t)size, inputFile);
@@ -94,12 +95,20 @@ int main(){
     for (int x = 0; x < size; x++){
         found_seed = get_seed(content[x], content[x + 1], content[x + 2], seed);
         if (found_seed != 0){
+            printf("Start pos: %d\n", x);
+            start_pos = x;
             break;
         }
     }
-    printf("The seed that has been found is: %d\n", found_seed);
-    init_rand_int_array(found_seed, rand_nums);
+    if (found_seed != 0){
+        printf("The seed that has been found is: %d\n", found_seed);
+        init_rand_int_array(found_seed, rand_nums);
 
-    decode_string(content, size, rand_nums);
+        decode_string(content, size, rand_nums, start_pos);
+        return 0;
+    } else {
+        printf("Found no matching seed...\n");
+        return 1;
+    }
 
 }
