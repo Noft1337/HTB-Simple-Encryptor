@@ -22,9 +22,5 @@ OR EAX, EBX
 
 ## Decrypting 
 Decryption is simple but it depends on having the right `seed` in order to get the random numbers that were generated.
-I believe that since the modification is July 17th 2022 on 14:44 then the seed should be `1658229288`, but for some reason when I tried running it with this seed I couldn't decrypt it correctly
-So my decryptor simply runs on all the seeds between the mentioned seed minus 100000 to the mentioned seed plus 100000, hoping 1 would be it.
-so for each seed it generates an array of all the random numbers and then trys to run the reversed operation (to the assembly one) and see if the first 3 characters are `H`,`T`,`B` as I know that the challange flag always starts with it.
-When it finds a seed which satisfies these requirements it then decodes the encrypted flag.
-
-#### THE PROGRAM IS STILL NOT FINISHED 
+In `reverse.c` we can see that the seed is being written to `flag.enc` in the first 4 bytes. So, that's how we get the seed.
+The rest of the decryption is pretty simple, just generate random numbers using the `seed` we have found and then \`unshift\` and \`unxor\` every char.
