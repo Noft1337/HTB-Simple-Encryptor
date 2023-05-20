@@ -52,6 +52,12 @@ void decode2(unsigned char *content, int size, unsigned int seed){
 int main(){
 
     FILE *inputFile = fopen("flag.enc", "rb");
+
+    if (!inputFile){
+        printf("Couldn't open 'flag.enc'\n");
+        return -1;
+    }
+
     unsigned int seed = get_seed(inputFile);
     int size = get_file_size(inputFile);
     unsigned char *content = (unsigned char *)malloc(size);
